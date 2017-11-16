@@ -11,8 +11,8 @@ MAINTAINER Matt Bajzek <mbajzek@mitre.org>
 
 USER 0
 
-RUN	chgrp -R root /usr/share/logstash \
-	&& chmod -R g+rw /usr/share/logstash 
+RUN	chown -R 1000:0 /usr/share/logstash \
+	&& chmod -R g+rw /usr/share/logstash
 
 USER 1000
 

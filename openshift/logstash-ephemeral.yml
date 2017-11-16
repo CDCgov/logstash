@@ -34,6 +34,8 @@ objects:
       name: ${LOGSTASH_SERVICE_NAME}
     sessionAffinity: None
     type: ClusterIP
+  status:
+    loadBalancer: {}
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -55,16 +57,16 @@ objects:
         - capabilities: {}
           image: ' '
           imagePullPolicy: IfNotPresent
-          readinessProbe:
-            initialDelaySeconds: 3
-            tcpSocket:
-              port: 9600
-            timeoutSeconds: 1
-          livenessProbe:
-            initialDelaySeconds: 30
-            tcpSocket:
-              port: 9600
-            timeoutSeconds: 1
+  #          readinessProbe:
+  #          initialDelaySeconds: 3
+  #          tcpSocket:
+  #            port: 9600
+  #          timeoutSeconds: 1
+  #        livenessProbe:
+  #          initialDelaySeconds: 30
+  #          tcpSocket:
+  #            port: 9600
+  #          timeoutSeconds: 1
           name: logstash
           ports:
           - containerPort: 9600
@@ -77,7 +79,7 @@ objects:
             privileged: false
           terminationMessagePath: /dev/termination-log
           volumeMounts:
-          - mountPath: /usr/share/logstash/pipeline
+          - mountPath: /usr/share/logstash/data
             name: ${LOGSTASH_SERVICE_NAME}-pipeline
         dnsPolicy: ClusterFirst
         restartPolicy: Always
@@ -103,7 +105,7 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   required: true
-  value: 512Mi
+  value: 1Gi
 - description: The OpenShift Namespace where the ImageStream resides.
   displayName: Namespace
   name: NAMESPACE
