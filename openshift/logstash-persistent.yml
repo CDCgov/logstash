@@ -1,23 +1,23 @@
 apiVersion: v1
 kind: Template
 labels:
-        template: ocp-logstash-ephemeral-template
+        template: ocp-logstash-persistent-template
 message: |-
   The following service(s) have been created in your project: ${LOGSTASH_SERVICE_NAME}.
 
 metadata:
   annotations:
     description: |-
-      Logstash service, without persistent storage.
+      Logstash service, with persistent storage.
 
-      WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+      NOTE: Scaling to more than one replica is not supported. You must have persistent volumes available in your cluster to use this template.
     iconClass: icon-logstash
-    openshift.io/display-name: OCP-Logstash (Ephemeral)
+    openshift.io/display-name: OCP-Logstash (Persistent)
     tags: logstash
     template.openshift.io/provider-display-name: SDP Team
     template.openshift.io/support-url: https://svcmgr.cdc.gov/
   creationTimestamp: null
-  name: ocp-logstash-ephemeral
+  name: ocp-logstash-persistent
 objects:
 - apiVersion: v1
   kind: Service
@@ -28,7 +28,7 @@ objects:
     ports:
     - name: logstash
       protocol: TCP
-      port: 9600 
+      port: 9600
       targetPort: 9600
     selector:
       name: ${LOGSTASH_SERVICE_NAME}
@@ -36,6 +36,16 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: ${LOGSTASH_SERVICE_NAME}-data
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY_DATA}
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -84,9 +94,9 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         volumes:
-        - emptyDir:
-            medium: ""
-          name: ${LOGSTASH_SERVICE_NAME}-data
+        - name: ${LOGSTASH_SERVICE_NAME}-data
+          persistentVolumeClaim:
+                claimName: ${LOGSTASH_SERVICE_NAME}-data
     triggers:
     - imageChangeParams:
         automatic: true
@@ -115,6 +125,11 @@ parameters:
   name: LOGSTASH_SERVICE_NAME
   required: true
   value: logstash
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Data Volume Capacity
+  name: VOLUME_CAPACITY_DATA
+  required: true
+  value: 1Gi
 - description: The name of the Logstash imagestream to be used
   displayName: Logstash Image Name
   name: LOGSTASH_IMAGE
