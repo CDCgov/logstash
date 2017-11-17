@@ -65,18 +65,23 @@ objects:
       spec:
         containers:
         - capabilities: {}
+          env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms${MEMORY_LIMIT} -Xmx${MEMORY_LIMIT}"
+          - name: ELASTICSEARCH_URL
+            value: "${ELASTICSEARCH_URL}"
           image: ' '
           imagePullPolicy: IfNotPresent
-  #          readinessProbe:
-  #          initialDelaySeconds: 3
-  #          tcpSocket:
-  #            port: 9600
-  #          timeoutSeconds: 1
-  #        livenessProbe:
-  #          initialDelaySeconds: 30
-  #          tcpSocket:
-  #            port: 9600
-  #          timeoutSeconds: 1
+          readinessProbe:
+            initialDelaySeconds: 3
+            tcpSocket:
+              port: 9600
+            timeoutSeconds: 1
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 9600
+            timeoutSeconds: 1
           name: logstash
           ports:
           - containerPort: 9600
@@ -111,6 +116,11 @@ objects:
     - type: ConfigChange
   status: {}
 parameters:
+- description: URL for the Elasticsearch service.
+  displayName: Elasticsearch URL
+  name: ELASTICSEARCH_URL
+  required: true
+  value: http://elasticsearch:9200
 - description: Maximum amount of memory the container can use.
   displayName: Memory Limit
   name: MEMORY_LIMIT
