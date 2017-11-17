@@ -1,0 +1,13 @@
+#######################
+# The following is from the official logstash.yml file
+#######################
+http.host: "0.0.0.0"
+path.config: /usr/share/logstash/pipeline
+
+#######################
+# The following is modified from the official logstash.yml file
+# The following placeholders are replaced via environment variables
+#   __ELASTICSEARCH_URL__
+#######################
+xpack.monitoring.elasticsearch.url: __ELASTICSEARCH_URL__
+
