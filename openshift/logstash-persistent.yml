@@ -26,9 +26,13 @@ objects:
     name: ${LOGSTASH_SERVICE_NAME}
   spec:
     ports:
-    - name: logstash
+    - name: input-beats
       protocol: TCP
-      port: 9600
+      port: 5044
+      targetPort: 5044
+    - name: output-elasticsearch
+      protocol: TCP
+      port: 9600 
       targetPort: 9600
     selector:
       name: ${LOGSTASH_SERVICE_NAME}
@@ -73,17 +77,19 @@ objects:
           image: ' '
           imagePullPolicy: IfNotPresent
           readinessProbe:
-            initialDelaySeconds: 3
+            initialDelaySeconds: 5
             tcpSocket:
-              port: 9600
+              port: 5044
             timeoutSeconds: 1
           livenessProbe:
             initialDelaySeconds: 30
             tcpSocket:
-              port: 9600
+              port: 5044
             timeoutSeconds: 1
           name: logstash
           ports:
+          - containerPort: 5044
+            protocol: TCP
           - containerPort: 9600
             protocol: TCP
           resources:
@@ -125,7 +131,7 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   required: true
-  value: 1Gi
+  value: 2Gi
 - description: The OpenShift Namespace where the ImageStream resides.
   displayName: Namespace
   name: NAMESPACE
