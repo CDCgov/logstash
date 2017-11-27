@@ -2,12 +2,17 @@
 # The following is from the official logstash.yml file
 #######################
 http.host: "0.0.0.0"
-path.config: /usr/share/logstash/pipeline
 
 #######################
 # The following is modified from the official logstash.yml file
 # The following placeholders are replaced via environment variables
-#   __ELASTICSEARCH_URL__
 #######################
+path.config: __LOGSTASH_PIPELINE__
 xpack.monitoring.elasticsearch.url: __ELASTICSEARCH_URL__
+
+#######################
+# The following is for ease of devops
+#######################
+## automatically restarts logstash when pipeline changes
+config.reload.automatic: true
 

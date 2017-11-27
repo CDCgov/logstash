@@ -9,13 +9,15 @@ MAINTAINER Matt Bajzek <mbajzek@mitre.org>
 USER 0
 
 ENV	LOGSTASH_HOME=/usr/share/logstash \
-	LOGSTASH_CONFIG=/usr/share/logstash/config
+	LOGSTASH_CONFIG=/usr/share/logstash/config \
+	LOGSTASH_PIPELINE=/usr/share/logstash/pipeline
 
 COPY logstash.yml.tmpl ${LOGSTASH_CONFIG}
+COPY logstash.conf.tmpl ${LOGSTASH_PIPELINE}
 COPY start_container.sh ${LOGSTASH_HOME}
 
-RUN	chown -R 1000:0 ${LOGSTASH_HOME} \
-	&& chmod -R g+rw ${LOGSTASH_HOME}
+RUN	chown -R 1000:0 ${LOGSTASH_HOME}/{config,data,pipeline} \
+	&& chmod -R g+rw ${LOGSTASH_HOME}/{config,data,pipeline}
 
 USER 1000
 ENTRYPOINT ["./start_container.sh"]
