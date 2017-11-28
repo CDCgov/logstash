@@ -83,7 +83,7 @@ objects:
           - containerPort: 9600
             protocol: TCP
           resources:
-            limits:
+            requests:
               memory: ${MEMORY_LIMIT}
           securityContext:
             capabilities: {}
@@ -121,7 +121,7 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   required: true
-  value: 2Gi
+  value: 1Gi
 - description: The OpenShift Namespace where the ImageStream resides.
   displayName: Namespace
   name: NAMESPACE
