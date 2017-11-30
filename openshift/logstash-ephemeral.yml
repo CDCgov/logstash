@@ -135,7 +135,7 @@ parameters:
   displayName: Logstash Image Name
   name: LOGSTASH_IMAGE
   value: ocp-logstash
-- description: Version of Logstash image to be used (5.6.4).
+- description: Version of Logstash image to be used (5.6.2).
   displayName: Version of Logstash Image
   name: LOGSTASH_VERSION
   required: true

@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:5.6.4
+FROM docker.elastic.co/logstash/logstash:5.6.2
 
 MAINTAINER Matt Bajzek <mbajzek@mitre.org>
 
@@ -8,9 +8,13 @@ MAINTAINER Matt Bajzek <mbajzek@mitre.org>
 
 USER 0
 
+VOLUME /usr/share/logstash/data
+
 ENV	LOGSTASH_HOME=/usr/share/logstash \
 	LOGSTASH_CONFIG=/usr/share/logstash/config \
 	LOGSTASH_PIPELINE=/usr/share/logstash/pipeline
+
+WORKDIR ${LOGSTASH_HOME}
 
 COPY logstash.yml.tmpl ${LOGSTASH_CONFIG}
 COPY logstash.conf.tmpl ${LOGSTASH_PIPELINE}
